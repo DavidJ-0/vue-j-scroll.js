@@ -47,6 +47,6 @@ Vue.use(VueScroll);
 | rollerScrollDistance | 滚轮滚动的速率   | number |（isRoller 必须为 true）为正数即可  |
 | data | 接收异步数据   | array |同步任务可不传 |
 
-如没有显示亲为嵌入的标签设置字体大小
+<font color=#ff0000>注：如没有显示亲为嵌入的标签设置字体大小</font>
 <br>
 <font color=#ff0000>注： 当scrollDirection 为top或bottom时，一定要为 vue-j-scroll 组件设置高度。 当scrollDirection 为left或right时，一定要为 vue-j-scroll 组件设置宽度。并为嵌入vue-j-scroll中的标签设置样式为display:inline-block; 示例样式名为list-item可以更改为其他类名。</font>
