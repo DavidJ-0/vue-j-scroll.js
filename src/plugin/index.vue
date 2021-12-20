@@ -9,7 +9,7 @@
     <div
       class="list-body"
       :class="{
-        'list-body2': scrollDirection === 'left' || scrollDirection === 'right'
+        'list-body2': isHorizontal,
       }"
       ref="listBody"
       :style="{ transform: getScrollDistance() }"
@@ -19,7 +19,7 @@
     <div
       class="list-body"
       :class="{
-        'list-body2': scrollDirection === 'left' || scrollDirection === 'right'
+        'list-body2': isHorizontal,
       }"
       ref="tBody"
       v-if="isCanScroll"
@@ -41,24 +41,31 @@ export default {
     steep: {
       //滚动速度
       type: Number,
-      default: 1
+      default: 1,
     },
     scrollDirection: {
       //滚动方向
       type: String,
-      default: "top"
+      default: "top",
     },
     isRoller: {
       //是否可以滑轮滚动
       type: Boolean,
-      default: true
+      default: true,
     },
     rollerScrollDistance: {
       //滑轮滚动的距离
       type: Number,
-      default: 20
+      default: 20,
     },
-    data: Array
+    data: Array,
+  },
+  computed: {
+    isHorizontal() {
+      return (
+        this.scrollDirection === "left" || this.scrollDirection === "right"
+      );
+    },
   },
   data() {
     return {
@@ -71,32 +78,30 @@ export default {
       listWidth: 0, //列表宽度
       isStop: !1,
       animationFrame: null,
-      isCanScroll: true
+      isCanScroll: true,
     };
   },
   methods: {
     start() {
       let that = this;
-      //滚动函数
+      //判断是否可以滚动函数
+      let isScrollFunc = (bodySize, listSize) => {
+        if (bodySize > listSize) {
+          this.scrollDistance = 0;
+          this.isCanScroll = !1;
+        }
+      };
+
       that.isStop = !1;
       //判断是否可以滚动
-      if (that.scrollDirection === "top" || that.scrollDirection === "bottom") {
-        if (that.bodyHeight > that.listHeight) {
-          this.scrollDistance = 0;
-          this.isCanScroll = !1;
-          return;
-        }
-      } else if (
-        that.scrollDirection === "left" ||
-        that.scrollDirection === "right"
-      ) {
-        if (that.bodyWidth > that.listWidth) {
-          this.scrollDistance = 0;
-          this.isCanScroll = !1;
-          return;
-        }
+      if (!this.isHorizontal) {
+        isScrollFunc(that.bodyHeight, that.listHeight);
+      } else {
+        isScrollFunc(that.bodyWidth, that.listWidth);
       }
-      this.run();
+      if (this.isCanScroll) {
+        this.run();
+      }
     },
     run() {
       let that = this;
@@ -105,32 +110,24 @@ export default {
       that.clearAnimation();
 
       that.animationFrame = window.requestAnimationFrame(() => {
-        let scrollDistance = Math.abs(that.scrollDistance);
-        //根据滚动方向判断使用height或宽度控制效果
-        if (
-          that.scrollDirection === "top" ||
-          that.scrollDirection === "bottom"
-        ) {
+        //滚动主逻辑函数
+        let main = (listSize, bodySize) => {
+          let scrollDistance = Math.abs(that.scrollDistance);
           if (that.scrollDistance < 0) {
-            let cc = 2 * that.listHeight - that.bodyHeight;
+            let cc = 2 * listSize - bodySize;
             if (scrollDistance > cc) {
-              that.scrollDistance = -(that.listHeight - that.bodyHeight);
+              that.scrollDistance = -(listSize - bodySize);
             }
           } else {
-            that.scrollDistance = -that.listHeight;
+            that.scrollDistance = -listSize;
           }
-        } else if (
-          that.scrollDirection === "left" ||
-          that.scrollDirection === "right"
-        ) {
-          if (that.scrollDistance < 0) {
-            let cc = 2 * that.listWidth - that.bodyWidth;
-            if (scrollDistance > cc) {
-              that.scrollDistance = -(that.listWidth - that.bodyWidth);
-            }
-          } else {
-            that.scrollDistance = -that.listWidth;
-          }
+        };
+
+        //根据滚动方向判断使用高度或宽度控制效果
+        if (!that.isHorizontal) {
+          main(that.listHeight, that.bodyHeight);
+        } else {
+          main(that.listWidth, that.bodyWidth);
         }
         //判断滚动值
         if (!that.isStop) {
@@ -190,7 +187,7 @@ export default {
     //获取滚动样式
     getScrollDistance() {
       let c;
-      if (this.scrollDirection === "top" || this.scrollDirection === "bottom") {
+      if (!this.isHorizontal) {
         c = "translate(0px, " + this.scrollDistance + "px)";
       } else {
         c = "translate(" + this.scrollDistance + "px,0px)";
@@ -224,14 +221,13 @@ export default {
       } else {
         this.scrollDistance += this.rollerScrollDistance;
       }
-
       this.run();
-    }
+    },
   },
   watch: {
     data(newval, oldval) {
       this.initData();
-    }
+    },
   },
 
   beforeMount() {},
@@ -252,7 +248,7 @@ export default {
     this.timer = null;
   },
   created() {},
-  beforeCreate() {}
+  beforeCreate() {},
 };
 </script>
 
