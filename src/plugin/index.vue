@@ -9,7 +9,7 @@
     <div
       class="list-body"
       :class="{
-        'list-body2': isHorizontal,
+        'list-body2': isHorizontal
       }"
       ref="listBody"
       :style="{ transform: getScrollDistance() }"
@@ -19,7 +19,7 @@
     <div
       class="list-body"
       :class="{
-        'list-body2': isHorizontal,
+        'list-body2': isHorizontal
       }"
       ref="tBody"
       v-if="isCanScroll"
@@ -41,31 +41,31 @@ export default {
     steep: {
       //滚动速度
       type: Number,
-      default: 1,
+      default: 1
     },
     scrollDirection: {
       //滚动方向
       type: String,
-      default: "top",
+      default: "top"
     },
     isRoller: {
       //是否可以滑轮滚动
       type: Boolean,
-      default: true,
+      default: true
     },
     rollerScrollDistance: {
       //滑轮滚动的距离
       type: Number,
-      default: 20,
+      default: 20
     },
-    data: Array,
+    data: Array
   },
   computed: {
     isHorizontal() {
       return (
         this.scrollDirection === "left" || this.scrollDirection === "right"
       );
-    },
+    }
   },
   data() {
     return {
@@ -78,7 +78,7 @@ export default {
       listWidth: 0, //列表宽度
       isStop: !1,
       animationFrame: null,
-      isCanScroll: true,
+      isCanScroll: true
     };
   },
   methods: {
@@ -222,12 +222,15 @@ export default {
         this.scrollDistance += this.rollerScrollDistance;
       }
       this.run();
-    },
+    }
   },
   watch: {
-    data(newval, oldval) {
-      this.initData();
-    },
+    data: {
+      handler() {
+        this.initData();
+      },
+      deep: true
+    }
   },
 
   beforeMount() {},
@@ -248,7 +251,7 @@ export default {
     this.timer = null;
   },
   created() {},
-  beforeCreate() {},
+  beforeCreate() {}
 };
 </script>
 
@@ -256,6 +259,7 @@ export default {
 .custom-list {
   white-space: nowrap;
   font-size: 0;
+  overflow: hidden;
 }
 .list-body {
   overflow: hidden;
