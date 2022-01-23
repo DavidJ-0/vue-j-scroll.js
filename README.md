@@ -50,3 +50,5 @@ Vue.use(VueScroll);
 <font color=#ff0000>注：如没有显示亲为嵌入的标签设置字体大小</font>
 <br>
 <font color=#ff0000>注： 当scrollDirection 为top或bottom时，一定要为 vue-j-scroll 组件设置高度。 当scrollDirection 为left或right时，一定要为 vue-j-scroll 组件设置宽度。并为嵌入vue-j-scroll中的标签设置样式为display:inline-block; 示例样式名为list-item可以更改为其他类名。</font>
+
+<font color=#ff0000>注：  当scrollDirection 为left或right时,是基于行内元素的“white-space: nowrap;” 来控制强制不换行的。有可能会影响其内部的文字排列。可以在list-item 层添加  white-space: normal; 来处理给问题。并为其添加固定宽度，以保证文字可以正常换行及插件的正确计算与显示。如果没有为其添加固定宽度，会造成插件获取父容器层的宽度值错误，导致显示混乱</font>
